@@ -1,0 +1,115 @@
+
+-- asignar privilegiosLOS SI
+Grant delete on uleam.estudiante to 'zambrano'@'localhost';
+Grant select on uleam.evaluaciones to 'zambrano'@'localhost';
+Grant insert on uleam.detalles to 'zambrano'@'localhost';
+Grant update on uleam.materias to 'zambrano'@'localhost';
+
+--comandos SQL 
+Show tables; 5 tablas 
+Diseñador. 
+Describe estudiantes; 5 campos 
+Selec * from materias; 20 materias
+
+--crear usuario 
+Create user 'zambrano'@'localhost' identified by 'dayana'
+
+--Borrar un procedimiento 
+Drop procedure detalle;
+
+--quitar privilegios los NO
+Revoke INSERT ON ULEAM.nombredelafila from 'ZAMBRANO'@'LOCALHOST';
+
+--PRACTICA
+DELIMITER // 
+
+CREATE PROCEDURE DETALLE (CÓDIGO INT(11))
+BEGIN 
+DECLARE RESPUESTA INT;
+DECLARE COD_PREGUNTA INT;
+	 DECLARE R_CORRECTA INT;
+SELECT * FROM DETALLES WHERE CODIGO_DET=CÓDIGO;
+WHERE CODIGO_DET=CODIGO;
+SELECT RESPUESTACORRECTA_DET INTO COD_PREGUNTA FROM DETALLES WHERE;
+CÓDIGO_DET=CÓDIGO;
+SELECT RESPUESTACORRECTA_DET INTO R_CORRECTA FROM DETALLES
+WHERE CÓDIGO_DET=CÓDIGO;
+IF RESPUESTA=R_CORRECTA THE
+IF RESPUESTA=R_CORRECTA THEN
+UPDATE DETALLES SET RESPUESTACORRECTA_DET='CORRECTA'
+WHERE CODIGO_DET=CÓDIGO;
+ELSE
+UPDATE DETALLES SET RESPUESTACORRECTA_DET='INCORRECTA'
+WHERE CODIGO_DET=CÓDIGO;
+END IF;
+
+	SELECT * FROM DETALLES WHERE CODIGO_DET=CÓDIGO;
+END //
+
+DELIMITER ;
+
+
+
+
+
+
+--creacion de usuario
+Create user 'vera'@'localhost' identified by 'uleam123';
+
+--Privilegios a nivel de base de datos.
+grant select on turismo.* to 'vera'@'localhost';
+grant delete on turismo.* to 'vera'@'localhost';
+
+--privilegios a nivel de tabla.
+grant select on turismo.turistas to 'vera'@'localhost';
+grant insert on turismo.ciudades to 'vera'@'localhost';
+grant update on turismo.lugares to 'vera'@'localhost';
+grant delete on turismo.visitas to 'vera'@'localhost';
+
+--Quitar permisos o privilegios
+revoke select on turismo.turistas from 'vera'@'localhost';
+
+--quitar permiso al usuario creado
+revoke select on turismo.* from 'vera'@'localhost';
+
+--Eliminación de usuario Mysql.
+drop user 'vera'@'localhost';
+
+--Seleccionar todos los registros y solo algunos campos de una tabla
+SELECT FECHA_VIS, HORAENTRADA_VIS, HORASALIDA_VIS FROM VISITAS;
+
+--Seleccionar todos los campos y solo algunos registros de una tabla.
+SELECT * FROM TURISTAS WHERE NACIONALIDAD_TUR='ARGENTINA';
+
+--Seleccionar algunos campos y algunos registros de una tabla.
+SELECT NOMBRE_LUG, DESCRIPCION_LUG, DIRECCION_LUG FROM LUGARES WHERE DIRECCION_LUG='GALAPAGOS';
+
+--Insertar en una tabla un registro completo (Todos los campos).
+INSERT INTO TURISTAS VALUES(NULL,'1351912348','VERA','MILLER',26,'ECUATORIANO');
+
+--Insertar en una tabla un registro, pero solo con algunos campos.
+UPDATE TURISTAS SET EDAD_TUR=27 WHERE ID_TUR=1;
+
+--Insertar datos a partir del siguiente enunciado
+into Ingresos values(null, 'Fiebre,dolor de abdominal y dearrea',72.2,168.5,'2023/9/28',10,22);
+
+--Insertar en una tabla un registro, pero solo con algunos campos.
+insert into pacientes(apellido, nombre)values('delgado','joselo');
+--para verificar el registro
+select * from pacientes where nombre='joselo';
+
+--Sentencia Update Actualizar un campo de un registro en una tabla.
+UPDATE TURISTAS SET EDAD_TUR=27 WHERE ID_TUR=1;
+
+--Actualizar varios campos de un registro en una tabla.
+update pacientes set idpaciente=27, cedula='1782034856',edad=40, direccion='el carmen', telefono=0993729439 where idpaciente=0;
+
+--Sentencia Delete Eliminar un registro de una tabla
+delete from medicos where idmedico=24;
+
+--Eliminar varios registros de una tabla
+delete from pacientes where edad >=20 and edad <=30;
+
+DROP PROCEDURE MOSTRAR_CIUDADES;
+
+
