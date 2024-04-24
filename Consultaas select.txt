@@ -1,0 +1,194 @@
+        3.1 Consulta 1
+Mostrar la cédula, en una sola columna mostrar el nombre y apellido, edad y el email de los 
+clientes, número, emisor, tipo y cupo de las tarjetas que posee cada cliente. Pero únicamente 
+se deben mostrar los registros en los cuales la cédula del cliente inicie con 17, 
+tengan una edad entre 25 y 40 años, posean una cuenta de email en GMAIL, el emisor de la 
+tarjeta sea DISCOVER con un cupo mayor a 1300 dólares.
+
+SELECT CEDULA_CLI,CONCAT(NOMBRE_CLI,' ',APELLIDO_CLI) AS 'NOMBRE Y APELLIDO',EDAD_CLI,EMAIL_CLI,
+NUMERO_TAR,EMISOR_TAR,TIPO_TAR,CUPO_TAR
+FROM CLIENTES
+INNER JOIN  TARJETAS ON CODIGO_CLI = FK_CODIGO_CLI
+WHERE CEDULA_CLI LIKE '17%' AND (EDAD_CLI BETWEEN 25 AND 40)
+AND EMAIL_CLI LIKE '%GMAIL%' AND EMISOR_TAR = 'DISCOVER' AND CUPO_TAR > 1300;
+
+
+
+        3.2 Consulta 2
+Mostrar nombre, fecha de afiliación (Debe aparecer en el formato DD/MM/AAAA, por ejemplo, 
+16/11/2023) y pais de los locales, fecha (Debe aparecer solo el nombre del mes y año, ejemplo: 
+November/2023), valor y tipo de movimiento. Únicamente deben aparecer los registros en los
+cuales el nombre del local tenga más de cinco caracteres, sean de un país que su nombre
+incluya la letra E, que los movimientos hayan sido realizados entre el 2019 y 2020, 
+que el tipo de movimiento sea CORRIENTE y que el valor sea menor a 250.
+
+SELECT NOMBRE_LOC,DATE_FORMAT(FECHAAFILIACION_LOC, '%d/%m/%Y') AS 'FECHA AFILIACION',
+PAIS_LOC, CONCAT(MONTHNAME(FECHA_MOV),'/',YEAR(FECHA_MOV)) AS 'MES Y AÑO',VALOR_MOV,TIPO_MOV
+FROM LOCALES
+INNER JOIN MOVIMIENTOS ON CODIGO_LOC = FK_CODIGO_LOC
+WHERE LENGTH(NOMBRE_LOC)=5 AND PAIS_LOC LIKE '%E%' 
+AND (YEAR(FECHA_MOV) BETWEEN 2019 AND 2020)
+AND TIPO_MOV = 'CORRIENTE' AND VALOR_MOV < 250;
+
+
+SELECT NOMBRE_LOC,CONCAT(DAY(FECHAAFILIACION_LOC),'/',MONTH(FECHAAFILIACION_LOC),'/',YEAR(FECHAAFILIACION_LOC)) 
+AS 'FECHA AFILIACION',
+PAIS_LOC, CONCAT(MONTHNAME(FECHA_MOV),'/',YEAR(FECHA_MOV)) AS 'MES Y AÑO',VALOR_MOV,TIPO_MOV
+FROM LOCALES
+INNER JOIN MOVIMIENTOS ON CODIGO_LOC = FK_CODIGO_LOC
+WHERE LENGTH(NOMBRE_LOC)=5 AND PAIS_LOC LIKE '%E%' 
+AND (YEAR(FECHA_MOV) BETWEEN 2019 AND 2020)
+AND TIPO_MOV = 'CORRIENTE' AND VALOR_MOV < 250;
+
+
+
+
+        3.3 Consulta 3
+Mostrar el nombre y apellido del cliente, número y tipo de tarjeta, fecha y valor del movimiento,
+pero únicamente de aquellos registros que el tipo de tarjeta sea CRÉDITO, el movimiento haya 
+sido realizado un día miércoles y por un valor superior a 100 dólares.
+
+
+SELECT NOMBRE_CLI,APELLIDO_CLI,NUMERO_TAR,TIPO_TAR,FECHA_MOV,VALOR_MOV
+FROM CLIENTES
+INNER JOIN TARJETAS ON CODIGO_CLI = FK_CODIGO_CLI
+INNER JOIN MOVIMIENTOS ON CODIGO_TAR = FK_CODIGO_TAR
+WHERE TIPO_TAR = 'CRÉDITO' AND DAYNAME(FECHA_MOV)= 'WEDNESDAY' AND VALOR_MOV > 100;
+
+SELECT NOMBRE_CLI,APELLIDO_CLI,NUMERO_TAR,TIPO_TAR,FECHA_MOV,VALOR_MOV
+FROM CLIENTES
+INNER JOIN TARJETAS ON CODIGO_CLI = FK_CODIGO_CLI
+INNER JOIN MOVIMIENTOS ON CODIGO_TAR = FK_CODIGO_TAR
+WHERE TIPO_TAR = 'CRÉDITO' AND DAYOFWEEK(FECHA_MOV) = 4 AND VALOR_MOV > 100;
+
+
+
+        3.4 Consulta 4
+Mostrar la cédula, nombre y apellido de los clientes, número y tipo de tarjeta, 
+fecha y total de movimiento, nombre y país del local, pero únicamente de aquellos 
+registros que el país del local es Ecuador y que el tercer dígito de la cédula del 
+cliente sea el 1 y que la fecha de movimiento sea menor a la fecha que resulta de restar 
+la fecha actual menos 1500 días.
+
+
+SELECT CEDULA_CLI,NOMBRE_CLI,APELLIDO_CLI,NUMERO_TAR,TIPO_TAR,FECHA_MOV,VALOR_MOV,
+NOMBRE_LOC,PAIS_LOC
+FROM CLIENTES
+INNER JOIN TARJETAS ON CODIGO_CLI = FK_CODIGO_CLI
+INNER JOIN MOVIMIENTOS ON CODIGO_TAR = FK_CODIGO_TAR
+INNER JOIN LOCALES ON CODIGO_LOC = FK_CODIGO_LOC
+WHERE PAIS_LOC = 'ECUADOR' AND SUBSTRING(CEDULA_CLI, 3, 1) = '1'
+AND FECHA_MOV < CURDATE() - INTERVAL 1500 DAY;
+
+
+
+SELECT CEDULA_CLI,NOMBRE_CLI,APELLIDO_CLI,NUMERO_TAR,TIPO_TAR,FECHA_MOV,VALOR_MOV,
+NOMBRE_LOC,PAIS_LOC
+FROM CLIENTES
+INNER JOIN TARJETAS ON CODIGO_CLI = FK_CODIGO_CLI
+INNER JOIN MOVIMIENTOS ON CODIGO_TAR = FK_CODIGO_TAR
+INNER JOIN LOCALES ON CODIGO_LOC = FK_CODIGO_LOC
+WHERE PAIS_LOC = 'ECUADOR' AND SUBSTRING(CEDULA_CLI, 3, 1) = '1'
+AND FECHA_MOV < DATE_SUB(CURDATE(), INTERVAL 1500 DAY);
+
+
+
+
+
+        3.5 Consulta 5
+Mostrar el mayor de los valores de los movimientos realizados en el local llamado MARATHON.
+
+SELECT MAX(VALOR_MOV) AS 'MAYOR VALOR',NOMBRE_LOC
+FROM MOVIMIENTOS
+INNER JOIN LOCALES ON CODIGO_LOC = FK_CODIGO_LOC
+WHERE NOMBRE_LOC= 'MARATHON';
+
+SELECT NOMBRE_LOC,MAX(VALOR_MOV) AS 'MAYOR VALOR'
+FROM LOCALES 
+INNER JOIN MOVIMIENTOS ON CODIGO_LOC = FK_CODIGO_LOC
+WHERE NOMBRE_LOC= 'MARATHON';
+
+
+
+        3.6 Consulta 6
+Mostrar cédula, nombre, apellido, ciudad del cliente, nombre y fecha de afiliación del local, 
+pero únicamente de aquellos locales que se afiliaron en Mayo del 2018 y que el número de cédula 
+del cliente tenga en el segundo dígito el 9 y en el último digito sea el 1.
+
+SELECT CEDULA_CLI,NOMBRE_CLI,APELLIDO_CLI,CIUDAD_CLI,NOMBRE_LOC,FECHAAFILIACION_LOC
+FROM  CLIENTES
+INNER JOIN TARJETAS ON CODIGO_CLI = FK_CODIGO_CLI
+INNER JOIN MOVIMIENTOS ON CODIGO_TAR = FK_CODIGO_TAR
+INNER JOIN LOCALES ON CODIGO_LOC = FK_CODIGO_LOC
+WHERE MONTH(FECHAAFILIACION_LOC) = 5 AND YEAR(FECHAAFILIACION_LOC) = 2018
+AND SUBSTRING(CEDULA_CLI, 2, 1) = '9' AND RIGHT(CEDULA_CLI, 1) = '1';
+
+
+
+SELECT CEDULA_CLI,NOMBRE_CLI,APELLIDO_CLI,CIUDAD_CLI,NOMBRE_LOC,FECHAAFILIACION_LOC
+FROM  CLIENTES
+INNER JOIN TARJETAS ON CODIGO_CLI = FK_CODIGO_CLI
+INNER JOIN MOVIMIENTOS ON CODIGO_TAR = FK_CODIGO_TAR
+INNER JOIN LOCALES ON CODIGO_LOC = FK_CODIGO_LOC
+WHERE MONTHNAME(FECHAAFILIACION_LOC) = 'MAY' AND YEAR(FECHAAFILIACION_LOC) = 2018
+AND SUBSTRING(CEDULA_CLI, 2, 1) = '9' AND RIGHT(CEDULA_CLI, 1) = '1';
+
+
+        3.7 Consulta 7
+Mostrar la cédula, nombre y apellido de los clientes, el nombre de usuario que se formará 
+de unir la primera letra del apellido en mayúsculas, la última letra del nombre en minúsculas 
+y los 4 últimos dígitos de la cédula, además deberán mostrar la clave que se formará de unir 
+el segundo, cuarto, sexto, octavo y décimo dígito de la cédula.
+
+
+
+
+SELECT CEDULA_CLI,NOMBRE_CLI,APELLIDO_CLI,CONCAT(UPPER(LEFT(APELLIDO_CLI,1)),LOWER(SUBSTRING(NOMBRE_CLI, -1)), 
+RIGHT(CEDULA_CLI, 4)) AS 'NOMBRE USUARIO', 
+CONCAT(SUBSTRING(CEDULA_CLI, 2, 1),SUBSTRING(CEDULA_CLI, 4, 1), 
+SUBSTRING(CEDULA_CLI, 6, 1), SUBSTRING(CEDULA_CLI, 8, 1), SUBSTRING(CEDULA_CLI, 10, 1))AS 'CLAVE'
+FROM CLIENTES;
+
+
+
+
+        3.8 Consulta 8
+Mostrar todos los datos de las tarjetas, pero únicamente de aquellas tarjetas que el cupo sea 
+igual al saldo y que su número incluye un 11.
+
+SELECT * FROM TARJETAS
+WHERE CUPO_TAR = SALDO_TAR AND NUMERO_TAR LIKE '%11%';
+
+
+
+
+        3.9 Consulta 9
+Mostrar el nombre, apellido y edad de los clientes, nombre del local, pero únicamente de 
+aquellos clientes que han comprado en el local llamado Walmart.
+
+SELECT NOMBRE_CLI,APELLIDO_CLI,EDAD_CLI,NOMBRE_LOC
+FROM CLIENTES 
+INNER JOIN TARJETAS ON CODIGO_CLI = FK_CODIGO_CLI
+INNER JOIN MOVIMIENTOS ON CODIGO_TAR = FK_CODIGO_TAR
+INNER JOIN LOCALES ON CODIGO_LOC = FK_CODIGO_LOC
+WHERE NOMBRE_LOC = 'Walmart';
+
+
+
+
+        3.10 Consulta 10
+Mostrar la cantidad de movimientos que ha realizado el cliente Lourdes Mendoza con su 
+tarjeta DISCOVER.
+
+
+SELECT COUNT(*) AS 'CANTIDAD MOVIMIENTOS',CONCAT(NOMBRE_CLI,' ',APELLIDO_CLI) AS 'NOMBRE Y APELLIDO'
+FROM CLIENTES 
+INNER JOIN TARJETAS ON CODIGO_CLI = FK_CODIGO_CLI
+INNER JOIN MOVIMIENTOS ON CODIGO_TAR = FK_CODIGO_TAR
+WHERE NOMBRE_CLI = 'LOURDES' AND APELLIDO_CLI = 'MENDOZA' AND EMISOR_TAR = 'DISCOVER';
+
+
+SELECT COUNT(*) AS 'CANTIDAD MOVIMIENTOS' FROM MOVIMIENTOS
+INNER JOIN TARJETAS ON CODIGO_TAR=FK_CODIGO_TAR
+INNER JOIN CLIENTES ON CODIGO_CLI=FK_CODIGO_CLI
+WHERE NOMBRE_CLI='Lourdes Mendoza' AND EMISOR_TAR='DISCOVER';
